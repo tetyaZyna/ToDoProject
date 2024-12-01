@@ -10,5 +10,5 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<ToDoModel> Customers { get; set; } = null!;
+    public DbSet<ToDoModel> ToDos { get; set; } = null!;
 }

@@ -14,5 +14,8 @@ var app = builder.Build();
 
 app.MapControllers();
 
+var context = app.Services.GetRequiredService<AppDbContext>();
+await context.Database.MigrateAsync();
+
 app.Run();
 
