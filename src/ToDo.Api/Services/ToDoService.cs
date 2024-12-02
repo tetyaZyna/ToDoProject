@@ -23,13 +23,28 @@ public class ToDoService : IToDoService
         return await _dbContext.ToDos.ToListAsync();
     }
 
-    public async Task<IEnumerable<ToDoModel>> FindByExpireDateAsync(DateTime from, DateTime to)
+    public async Task<IEnumerable<ToDoModel>?> FindByExpireDateAsync(DateTime from, DateTime to)
     {
+        if (from > to) 
+        {
+            return null;
+        }
         return await _dbContext.ToDos.Where(todo => todo.ExpiryDate >= from && todo.ExpiryDate <= to).ToListAsync();
     }
 
     public async Task<ToDoModel?> CreateAsync(ToDoModel toDo)
-    {        
+    {    
+        if (string.IsNullOrWhiteSpace(toDo.Title))
+        {
+            return null;
+        }
+        if (toDo.ExpiryDate < DateTime.UtcNow)
+        {
+            return null;
+        }
+        toDo.Id = 0;
+        toDo.CompletionPercentage = 0;
+
         _dbContext.ToDos.Add(toDo);
         await _dbContext.SaveChangesAsync();
         return toDo;

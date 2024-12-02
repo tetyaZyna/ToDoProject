@@ -36,12 +36,12 @@ public class ToDoController : ControllerBase
     [HttpGet("expiry")]
     public async Task<IResult> GetByExpiryDate(DateTime from, DateTime to)
     {
-        if (from > to) 
+        var todo = await _toDoService.FindByExpireDateAsync(from, to);
+
+        if (todo is null) 
         {
             return Results.BadRequest("The start date cannot be later than the end date.");
         }
-
-        var todo = await _toDoService.FindByExpireDateAsync(from, to);
         
         return Results.Ok(todo);
     }
@@ -49,22 +49,11 @@ public class ToDoController : ControllerBase
     [HttpPost("")]
     public async Task<IResult> CreateToDo(ToDoModel toDo)
     {
-        if (string.IsNullOrWhiteSpace(toDo.Title))
-        {
-            return Results.BadRequest(new { Error = "Title is required" });
-        }
-        if (toDo.ExpiryDate < DateTime.UtcNow)
-        {
-            return Results.BadRequest(new { Error = "Expiry date cannot be in the past" });
-        }
-        toDo.Id = 0;
-        toDo.CompletionPercentage = 0;
-
         var createdToDo = await _toDoService.CreateAsync(toDo);
 
         if (createdToDo is null) 
         {
-            return Results.BadRequest("Failed to create ToDo. Please try again.");
+            return Results.BadRequest("Request data is not valid");
         }
         
         return Results.Created($"/api/todos/{createdToDo.Id}", createdToDo);

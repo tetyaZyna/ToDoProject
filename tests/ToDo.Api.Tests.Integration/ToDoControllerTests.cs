@@ -5,19 +5,19 @@ using System.Net.Http.Json;
 
 namespace ToDo.Api.Tests.Integration;
 
-public class ToDoControllerTest : IClassFixture<CustomerApiFactory>
+public class ToDoControllerTests : IClassFixture<CustomerApiFactory>
 {
     private readonly HttpClient _client;
     private readonly AppDbContext _dbContext;
 
-    public ToDoControllerTest(CustomerApiFactory apiFactory)
+    public ToDoControllerTests(CustomerApiFactory apiFactory)
     {
         _client = apiFactory.CreateClient();
         _dbContext = apiFactory.Services.GetRequiredService<AppDbContext>();
     }
 
     [Fact]
-    public async Task GetAll_ShouldReturnEmptyList_WhenNoItemsInDatabase()
+    public async Task GetAll_ReturnsEmptyList_WhenNoItemsInDatabase()
     {
         // Arrange
         _dbContext.ToDos.RemoveRange(_dbContext.ToDos);

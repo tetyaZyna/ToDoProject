@@ -8,7 +8,7 @@ public interface IToDoService
 
     Task<IEnumerable<ToDoModel>> GetAllAsync();
 
-    Task<IEnumerable<ToDoModel>> FindByExpireDateAsync(DateTime from, DateTime to);
+    Task<IEnumerable<ToDoModel>?> FindByExpireDateAsync(DateTime from, DateTime to);
 
     Task<ToDoModel?> CreateAsync(ToDoModel todo);
 
