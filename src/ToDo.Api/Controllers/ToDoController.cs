@@ -62,7 +62,8 @@ public class ToDoController : ControllerBase
 
         var createdToDo = await _toDoService.CreateAsync(toDo);
 
-        if (createdToDo is null) {
+        if (createdToDo is null) 
+        {
             return Results.BadRequest("Failed to create ToDo. Please try again.");
         }
         
@@ -104,7 +105,7 @@ public class ToDoController : ControllerBase
     }
 
     [HttpPatch("{id}/mark_done")]
-    public async Task<IResult> UpdateToDoCompletionPercentage(int id)
+    public async Task<IResult> MarkDoneToDo(int id)
     {
         int doneCompletionPercentages = 100;
         var isUpdated = _toDoService.UpdateCompletionPercentageByIdAsync(id, doneCompletionPercentages);
@@ -112,10 +113,6 @@ public class ToDoController : ControllerBase
         if (!result.HasValue)
         {
             return Results.NotFound();
-        } 
-        else if (result.HasValue && !result.Value)
-        {
-            return Results.BadRequest("No changes detected");
         }
         
         return Results.NoContent();

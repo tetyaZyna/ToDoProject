@@ -41,7 +41,7 @@ public class ToDoService : IToDoService
 
         if (existingToDo is null) 
         {
-            return false;
+            return null;
         }
 
         bool isUpdated = false;
