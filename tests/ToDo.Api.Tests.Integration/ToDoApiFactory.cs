@@ -10,31 +10,33 @@ namespace ToDo.Api.Tests.Integration;
 
 public class CustomerApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _databaseContainer = new PostgreSqlBuilder()
+    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithPortBinding(5431, 5431)
+        .WithDatabase("test_db")
         .WithUsername("postgres")
         .WithPassword("12345")
-        .WithDatabase("ToDos")
         .Build();
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureTestServices(x =>
+        builder.ConfigureTestServices(services =>
         {
-            x.Remove(x.Single(a => typeof(DbContextOptions<AppDbContext>) == a.ServiceType));
-            x.AddDbContext<AppDbContext>(a =>
+            services.Remove(services.Single(s => typeof(DbContextOptions<AppDbContext>) == s.ServiceType));
+            services.AddDbContext<AppDbContext>(options =>
             {
-                a.UseNpgsql(_databaseContainer.GetConnectionString());
+                options.UseNpgsql(_dbContainer.GetConnectionString());
             }, ServiceLifetime.Singleton);
         });
     }
 
     public async Task InitializeAsync()
     {
-        await _databaseContainer.StartAsync();
+        await _dbContainer.StartAsync();
     }
 
     public new async Task DisposeAsync()
     {
-        await _databaseContainer.StopAsync();
+        await _dbContainer.StopAsync();
     }
 }

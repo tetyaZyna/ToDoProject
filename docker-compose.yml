@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+
+  app:
+    build: .
+    container_name: todo-api
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Database__ConnectionString=Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=db_app;Port=5432;Database=${POSTGRES_DB};
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - db_app
+
+  db_app:
+    image: postgres:latest
+    container_name: db_app
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5432:5432'
