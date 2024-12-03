@@ -76,7 +76,7 @@ public class ToDoController : ControllerBase
         return Results.NoContent();
     }
 
-    [HttpPatch("{id}/completion")]
+    [HttpPatch("{id}/completion")] //Use Patch for update only one field
     public async Task<IResult> UpdateToDoCompletionPercentage(int id, int completionPercentage)
     {
         var isUpdated = _toDoService.UpdateCompletionPercentageByIdAsync(id, completionPercentage);
@@ -93,7 +93,7 @@ public class ToDoController : ControllerBase
         return Results.NoContent();
     }
 
-    [HttpPatch("{id}/mark_done")]
+    [HttpPatch("{id}/mark_done")] //Use Patch for update only one field
     public async Task<IResult> MarkDoneToDo(int id)
     {
         int doneCompletionPercentages = 100;

@@ -25,6 +25,7 @@ public class ToDoService : IToDoService
 
     public async Task<IEnumerable<ToDoModel>?> FindByExpireDateAsync(DateTime from, DateTime to)
     {
+        //error indication
         if (from > to) 
         {
             return null;
@@ -33,15 +34,18 @@ public class ToDoService : IToDoService
     }
 
     public async Task<ToDoModel?> CreateAsync(ToDoModel toDo)
-    {    
+    { 
+        //Validate field to make impossible to save an empty title   
         if (string.IsNullOrWhiteSpace(toDo.Title))
         {
             return null;
         }
+        //Validate field to make impossible to save the date later than the time now
         if (toDo.ExpiryDate < DateTime.UtcNow)
         {
             return null;
         }
+        //set the ID to zero to not interfere with the auto generation in the database
         toDo.Id = 0;
         toDo.CompletionPercentage = 0;
 
@@ -61,6 +65,7 @@ public class ToDoService : IToDoService
 
         bool isUpdated = false;
 
+        // Update title, description, or expiry date if they differ and are valid
         if (existingToDo.Title != toDo.Title && !string.IsNullOrWhiteSpace(toDo.Title))
         {
             existingToDo.Title = toDo.Title;
@@ -94,6 +99,7 @@ public class ToDoService : IToDoService
 
         bool isUpdated = false;
 
+        // Update сompletion percentage if it differ and valid
         if (existingToDo.CompletionPercentage != completionPercentage && completionPercentage is >= 0 and <= 100)
         {
             existingToDo.CompletionPercentage = completionPercentage;
