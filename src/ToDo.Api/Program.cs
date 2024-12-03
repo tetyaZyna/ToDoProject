@@ -1,6 +1,7 @@
 using ToDo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Api.Services;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,23 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     x.UseNpgsql(builder.Configuration["Database:ConnectionString"]!);
 }, ServiceLifetime.Singleton);
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDo API", Version = "v1" });
+});
+
 builder.Services.AddScoped<IToDoService, ToDoService>();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo API V1");
+    c.RoutePrefix = string.Empty;
+});
+
+app.UseRouting();
 
 app.MapControllers();
 
